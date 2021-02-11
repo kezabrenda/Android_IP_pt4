@@ -44,7 +44,7 @@ public class CleaningDetailFragment extends Fragment implements View.OnClickList
         // Required empty public constructor
     }
 
-    public static CleaningDetailFragment newInstance(CleaningActivity dryCleaning){
+    public static CleaningDetailFragment newInstance(Cleaning dryCleaning){
         CleaningDetailFragment cleaningDetailFragment = new CleaningDetailFragment();
         Bundle args = new Bundle();
         args.putParcelable("dry cleaning", Parcels.wrap(dryCleaning));

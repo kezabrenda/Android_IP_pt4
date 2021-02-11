@@ -1,7 +1,10 @@
 package com.example.myandroidip_pt2.adapters;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +15,7 @@ import com.example.myandroidip_pt2.Cleaning;
 import com.example.myandroidip_pt2.Constants;
 import com.example.myandroidip_pt2.R;
 import com.example.myandroidip_pt2.ui.CleaningDetailActivity;
+import com.example.myandroidip_pt2.util.ItemTouchHelperViewHolder;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,15 +29,19 @@ import org.parceler.Parcels;
 
 import java.util.ArrayList;
 
-public class FirebaseCleaningViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+public class FirebaseCleaningViewHolder extends RecyclerView.ViewHolder implements ItemTouchHelperViewHolder {
+    private static final int MAX_WIDTH = 200;
+    private static final int MAX_HEIGHT = 200;
+
     View mView;
     Context mContext;
+    public ImageView dryCleaningImageView;
 
     public FirebaseCleaningViewHolder(View itemView) {
         super(itemView);
         mView = itemView;
         mContext = itemView.getContext();
-        itemView.setOnClickListener(this);
+        itemView.setOnClickListener((View.OnClickListener) this);
     }
 
     public void bindCleaning(Cleaning cleaning) {
@@ -81,6 +89,20 @@ public class FirebaseCleaningViewHolder extends RecyclerView.ViewHolder implemen
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
+
         });
+    }
+    @Override
+    public void onItemSelected() {
+        AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mContext,R.animator.drag_scale_on);
+        set.setTarget(itemView);
+        set.start();
+    }
+
+    @Override
+    public void onItemClear() {
+        AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mContext, R.animator.drag_scale_off);
+        set.setTarget(itemView);
+        set.start();
     }
 }

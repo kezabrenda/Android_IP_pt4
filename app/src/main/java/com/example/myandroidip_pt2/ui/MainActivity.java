@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .child(Constants.FIREBASE_CHILD_SEARCHED_LOCATION);
         mSearchedLocationReferenceListener = mSearchedLocationReference.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) { //something changed!
+            public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot locationSnapshot : dataSnapshot.getChildren()) {
                     String location = locationSnapshot.getValue().toString();
                     Log.d("Locations updated", "location: " + location); //log
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) { //update UI here if error occurred.
+            public void onCancelled(DatabaseError databaseError) {
 
             }
         });
