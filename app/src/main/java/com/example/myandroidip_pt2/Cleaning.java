@@ -17,6 +17,7 @@ public class Cleaning {
     double longitude;
     ArrayList<String> categories = new ArrayList<>();
     private String pushId;
+    String index;
 
     public Cleaning(){}
 
@@ -32,6 +33,7 @@ public class Cleaning {
         this.latitude = latitude;
         this.longitude = longitude;
         this.categories = categories;
+        this.index = "not_specified";
     }
     public String getName() {
         return name;
@@ -75,5 +77,13 @@ public class Cleaning {
 
     public void setPushId(String pushId) {
         this.pushId = pushId;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 }

@@ -2,6 +2,7 @@ package com.example.myandroidip_pt2;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -11,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.myandroidip_pt2.adapters.FirebaseCleaningViewHolder;
+import com.example.myandroidip_pt2.util.OnStartDragListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -21,9 +23,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SavedCleaningListActivity extends AppCompatActivity {
+public class SavedCleaningListActivity extends AppCompatActivity implements OnStartDragListener {
     private DatabaseReference mCleaningReference;
     private FirebaseRecyclerAdapter<Cleaning, FirebaseCleaningViewHolder> mFirebaseAdapter;
+    private ItemTouchHelper mItemTouchHelper;
 
     @BindView(R.id.recyclerView) RecyclerView mRecyclerView;
 
@@ -79,6 +82,9 @@ public class SavedCleaningListActivity extends AppCompatActivity {
         if (mFirebaseAdapter != null) {
             mFirebaseAdapter.stopListening();
         }
+    }
+    public void onStartDrag(RecyclerView.ViewHolder viewHolder){
+        mItemTouchHelper.startDrag(viewHolder);
     }
 
 }
