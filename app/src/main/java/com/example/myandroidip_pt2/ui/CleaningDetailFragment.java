@@ -41,6 +41,8 @@ public class CleaningDetailFragment extends Fragment implements View.OnClickList
     @BindView(R.id.saveDryCleaningButton) TextView mSaveDryCleaningButton;
 
     private Cleaning mCleaning;
+    private ArrayList<Cleaning> mDryCleaning;
+    private int mPosition;
 
     public CleaningDetailFragment() {
         // Required empty public constructor
@@ -61,7 +63,10 @@ public class CleaningDetailFragment extends Fragment implements View.OnClickList
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        mCleaning = Parcels.unwrap(getArguments().getParcelable("dry cleaning"));
+        mDryCleaning = Parcels.unwrap(getArguments().getParcelable(Constants.EXTRA_KEY_CLEANING));
+        mPosition = getArguments().getInt(Constants.EXTRA_KEY_POSITION);
+        mCleaning = mDryCleaning.get(mPosition);
+
     }
 
     @Override

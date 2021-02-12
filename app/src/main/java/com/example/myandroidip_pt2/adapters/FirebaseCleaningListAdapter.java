@@ -2,6 +2,7 @@ package com.example.myandroidip_pt2.adapters;
 
 import android.content.Intent;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,12 +10,15 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.myandroidip_pt2.Cleaning;
+import com.example.myandroidip_pt2.Constants;
 import com.example.myandroidip_pt2.R;
 import com.example.myandroidip_pt2.SavedCleaningListActivity;
 import com.example.myandroidip_pt2.SavedCleaningListFragment;
 import com.example.myandroidip_pt2.ui.CleaningDetailActivity;
+import com.example.myandroidip_pt2.ui.CleaningDetailFragment;
 import com.example.myandroidip_pt2.util.ItemTouchHelperAdapter;
 import com.example.myandroidip_pt2.util.OnStartDragListener;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
@@ -37,6 +41,7 @@ public class FirebaseCleaningListAdapter extends FirebaseRecyclerAdapter<Cleanin
     private Context mContext;
     private ChildEventListener mChildEventListener;
     private ArrayList<Cleaning> mCleaning = new ArrayList<>();
+    private int mOrientation;
 
     public FirebaseCleaningListAdapter(FirebaseRecyclerOptions<Cleaning> options,
                                          Query ref,
@@ -82,7 +87,14 @@ public class FirebaseCleaningListAdapter extends FirebaseRecyclerAdapter<Cleanin
     @Override
     protected void onBindViewHolder(@NonNull final FirebaseCleaningViewHolder firebaseCleaningViewHolder,
                                     int position, @NonNull Cleaning cleaning) {
+
         firebaseCleaningViewHolder.bindCleaning(cleaning);
+
+        mOrientation = firebaseCleaningViewHolder.itemView.getResources().getConfiguration().orientation;
+        if (mOrientation == Configuration.ORIENTATION_LANDSCAPE){
+            createDetailFragment(0);
+        }
+
         firebaseCleaningViewHolder.dryCleaningImageView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -96,12 +108,24 @@ public class FirebaseCleaningListAdapter extends FirebaseRecyclerAdapter<Cleanin
         firebaseCleaningViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, CleaningDetailActivity.class);
-                intent.putExtra("position", firebaseCleaningViewHolder.getAdapterPosition());
-                intent.putExtra("dry cleaner", Parcels.wrap(mCleaning));
-                mContext.startActivity(intent);
+                int itemPosition = firebaseCleaningViewHolder.getAdapterPosition();
+                if (mOrientation == Configuration.ORIENTATION_LANDSCAPE){
+                    createDetailFragment(itemPosition);
+                } else {
+                    Intent intent = new Intent(mContext, CleaningDetailActivity.class);
+                    intent.putExtra(Constants.EXTRA_KEY_POSITION, itemPosition);
+                    intent.putExtra(Constants.EXTRA_KEY_CLEANING, Parcels.wrap(mCleaning));
+                    mContext.startActivity(intent);
+                }
             }
         });
+    }
+
+    private void createDetailFragment(int position){
+        CleaningDetailFragment detailFragment = CleaningDetailFragment.newInstance(mCleaning, position);
+        FragmentTransaction ft = ((FragmentActivity) mContext).getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.cleaningDetailContainer, detailFragment);
+        ft.commit();
     }
 
     @NonNull
