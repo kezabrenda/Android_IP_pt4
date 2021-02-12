@@ -25,6 +25,8 @@ import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -44,13 +46,17 @@ public class CleaningDetailFragment extends Fragment implements View.OnClickList
         // Required empty public constructor
     }
 
-    public static CleaningDetailFragment newInstance(Cleaning dryCleaning){
+    public static CleaningDetailFragment newInstance(ArrayList<Cleaning> mDryCleaning, int position){
         CleaningDetailFragment cleaningDetailFragment = new CleaningDetailFragment();
         Bundle args = new Bundle();
-        args.putParcelable("dry cleaning", Parcels.wrap(dryCleaning));
+
+        args.putParcelable(Constants.EXTRA_KEY_CLEANING, Parcels.wrap(mDryCleaning));
+        args.putInt(Constants.EXTRA_KEY_POSITION, position);
+
         cleaningDetailFragment.setArguments(args);
         return cleaningDetailFragment;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){

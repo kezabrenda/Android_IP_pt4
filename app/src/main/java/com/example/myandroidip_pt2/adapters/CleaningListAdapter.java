@@ -2,18 +2,23 @@ package com.example.myandroidip_pt2.adapters;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myandroidip_pt2.Cleaning;
+import com.example.myandroidip_pt2.Constants;
 import com.example.myandroidip_pt2.R;
 import com.example.myandroidip_pt2.models.Business;
 import com.example.myandroidip_pt2.ui.CleaningDetailActivity;
+import com.example.myandroidip_pt2.ui.CleaningDetailFragment;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -57,12 +62,25 @@ public class CleaningListAdapter extends RecyclerView.Adapter<CleaningListAdapte
         @BindView(R.id.ratingTextView) TextView mRatingTextView;
 
         private Context mContext;
+        private int mOrientation;
 
         public CleaningViewHolder(View itemView){
             super(itemView);
             ButterKnife.bind(this, itemView);
             mContext = itemView.getContext();
+            mOrientation = itemView.getResources().getConfiguration().orientation;
+
+            if (mOrientation == Configuration.ORIENTATION_LANDSCAPE){
+                createDetailFragment(0);
+            }
+
             itemView.setOnClickListener(this);
+        }
+        private void createDetailFragment(int position){
+            CleaningDetailFragment detailFragment = CleaningDetailFragment.newInstance(mDryCleaning, position);
+            FragmentTransaction ft = ((FragmentActivity)mContext).getSupportFragmentManager().beginTransaction();
+            ft.replace(R.id.cleaningDetailContainer, detailFragment);
+            ft.commit();
         }
 
         public void bindCleaning(Cleaning cleaning) {
@@ -75,10 +93,15 @@ public class CleaningListAdapter extends RecyclerView.Adapter<CleaningListAdapte
         @Override
         public void onClick(View v){
             int itemPosition = getLayoutPosition();
-            Intent intent = new Intent(mContext, CleaningDetailActivity.class);
-            intent.putExtra("position", itemPosition);
-            intent.putExtra("dry cleaning", Parcels.wrap(mDryCleaning));
-            mContext.startActivity(intent);
+
+            if(mOrientation == Configuration.ORIENTATION_LANDSCAPE){
+                createDetailFragment(itemPosition);
+            } else {
+                Intent intent = new Intent(mContext, CleaningDetailActivity.class);
+                intent.putExtra(Constants.EXTRA_KEY_POSITION, itemPosition);
+                intent.putExtra(Constants.EXTRA_KEY_CLEANING, Parcels.wrap(mDryCleaning));
+                mContext.startActivity(intent);
+            }
         }
     }
 }
